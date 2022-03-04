@@ -6,17 +6,19 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/NRF52_ISR_Servo.svg)](http://github.com/khoih-prog/NRF52_ISR_Servo/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
 
 ---
 ---
 
 ## Table of Contents
 
+* [Important Change from v1.1.0](#Important-Change-from-v110)
 * [Why do we need this NRF52_ISR_Servo library](#why-do-we-need-this-nrf52_isr_servo-library)
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
-* [Changelog](#changelog)
+* [Changelog](changelog.md)
   * [Releases v1.0.0](#releases-v100)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
@@ -25,11 +27,13 @@
   * [VS Code & PlatformIO](#vs-code--platformio)
 * [Packages' Patches](#packages-patches)
   * [1. For Adafruit nRF52840 and nRF52832 boards](#1-for-adafruit-nrf52840-and-nrf52832-boards)
+* [HOWTO Fix `Multiple Definitions` Linker Error](#howto-fix-multiple-definitions-linker-error) 
 * [What special in this NRF52_ISR_Servo library](#what-special-in-this-nrf52_isr_servo-library)
 * [HOWTO Usage](#howto-usage)
 * [Examples](#examples)
   * [ 1. nRF52_MultipleRandomServos](examples/nRF52_MultipleRandomServos)
   * [ 2. nRF52_MultipleServos](examples/nRF52_MultipleServos)
+  * [ 3. **multiFileProject**](examples/multiFileProject) **New**
 * [Example nRF52_MultipleServos](#example-nrf52_multipleservos)
   * [1. File nRF52_MultipleServos.ino](#1-file-nrf52_multipleservosino)
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
@@ -37,7 +41,6 @@
   * [2. nRF52_MultipleRandomServos on Adafruit NRF52840_ITSYBITSY](#2-nRF52_multiplerandomservos-on-adafruit-nrf52840_itsybitsy)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
-* [Releases](#releases)
 * [Issues](#issues)
 * [TO DO](#to-do)
 * [DONE](#done)
@@ -46,6 +49,12 @@
 * [License](#license)
 * [Copyright](#copyright)
 
+---
+---
+
+### Important Change from v1.1.0
+
+Please have a look at [HOWTO Fix `Multiple Definitions` Linker Error](#howto-fix-multiple-definitions-linker-error)
 
 ---
 ---
@@ -72,16 +81,7 @@ This library enables you to use `1 Hardware PWM module` on an nRF52-based board 
 ### Currently supported Boards
 
   - **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox etc.**
- 
----
----
-
-## Changelog
-
-### Releases v1.0.0
-
-1. Basic 16 ISR-based servo controllers using 1 hardware PWM module for nRF52-based board
-2. Support to both nRF52832 and nRF52840
+  - **Sparkfun Pro nRF52840 Mini**
 
 
 ---
@@ -92,6 +92,7 @@ This library enables you to use `1 Hardware PWM module` on an nRF52-based board 
 1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
 2. [`Adafruit nRF52 v1.3.0+`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
 
+---
 ---
 
 ## Installation
@@ -114,7 +115,7 @@ Another way to install is to:
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**NRF52_ISR_Servo** library](https://platformio.org/lib/show/12722/NRF52_ISR_Servo) by using [Library Manager](https://platformio.org/lib/show/12722/NRF52_ISR_Servo/installation). Search for **NRF52_ISR_Servo** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**NRF52_ISR_Servo** library](https://registry.platformio.org/libraries/khoih-prog/NRF52_ISR_Servo) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/NRF52_ISR_Servo/installation). Search for **NRF52_ISR_Servo** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 ---
@@ -124,16 +125,16 @@ Another way to install is to:
 
 #### 1. For Adafruit nRF52840 and nRF52832 boards
 
-**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.24.0](Packages_Patches/adafruit/hardware/nrf52/0.24.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.24.0). 
+**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 1.3.0](Packages_Patches/adafruit/hardware/nrf52/1.3.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/1.3.0). 
 
-Supposing the Adafruit nRF52 version is 0.24.0. These files must be copied into the directory:
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.24.0/platform.txt`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.24.0/boards.txt`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.24.0/variants/NINA_B302_ublox/variant.h`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.24.0/variants/NINA_B302_ublox/variant.cpp`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.24.0/variants/NINA_B112_ublox/variant.h`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.24.0/variants/NINA_B112_ublox/variant.cpp`
-- **`~/.arduino15/packages/adafruit/hardware/nrf52/0.24.0/cores/nRF5/Udp.h`**
+Supposing the Adafruit nRF52 version is 1.3.0. These files must be copied into the directory:
+- `~/.arduino15/packages/adafruit/hardware/nrf52/1.3.0/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/1.3.0/boards.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/1.3.0/variants/NINA_B302_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/1.3.0/variants/NINA_B302_ublox/variant.cpp`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/1.3.0/variants/NINA_B112_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/1.3.0/variants/NINA_B112_ublox/variant.cpp`
+- **`~/.arduino15/packages/adafruit/hardware/nrf52/1.3.0/cores/nRF5/Udp.h`**
 
 Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
 These files must be copied into the directory:
@@ -145,6 +146,38 @@ These files must be copied into the directory:
 - `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.h`
 - `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.cpp`
 - **`~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/cores/nRF5/Udp.h`**
+
+---
+
+To use `Sparkfun Pro nRF52840 Mini`, you must install `Packages_Patches` and use Adafruit nrf52 core v1.0.0+
+
+
+---
+---
+
+### HOWTO Fix `Multiple Definitions` Linker Error
+
+The current library implementation, using `xyz-Impl.h` instead of standard `xyz.cpp`, possibly creates certain `Multiple Definitions` Linker error in certain use cases.
+
+You can include this `.hpp` file
+
+```
+// Can be included as many times as necessary, without `Multiple Definitions` Linker Error
+#include "NRF52_ISR_Servo.hpp"     //https://github.com/khoih-prog/NRF52_ISR_Servo
+```
+
+in many files. But be sure to use the following `.h` file **in just 1 `.h`, `.cpp` or `.ino` file**, which must **not be included in any other file**, to avoid `Multiple Definitions` Linker Error
+
+```
+// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
+#include "NRF52_ISR_Servo.h"           //https://github.com/khoih-prog/NRF52_ISR_Servo
+```
+
+Check the new [**multiFileProject** example](examples/multiFileProject) for a `HOWTO` demo.
+
+Have a look at the discussion in [Different behaviour using the src_cpp or src_h lib #80](https://github.com/khoih-prog/ESPAsync_WiFiManager/discussions/80)
+
+
 
 ---
 ---
@@ -170,138 +203,7 @@ This non-being-blocked important feature is absolutely necessary for mission-cri
 
 How to use:
 
-```
-#if !(defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
-      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || \
-      defined(NRF52840_CLUE) || defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || \
-      defined(MDBT50Q_RX) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-  #error This code is designed to run on nRF52 platform! Please check your Tools->Board setting.
-#endif
-
-#define TIMER_INTERRUPT_DEBUG       4
-#define ISR_SERVO_DEBUG             4
-
-#include "NRF52_ISR_Servo.h"
-
-// Published values for SG90 servos; adjust if needed
-#define MIN_MICROS        800
-#define MAX_MICROS        2450 
-
-#define SERVO_PIN_1       A0
-#define SERVO_PIN_2       A1
-#define SERVO_PIN_3       A2
-#define SERVO_PIN_4       A3
-#define SERVO_PIN_5       A4
-#define SERVO_PIN_6       A5
-
-typedef struct
-{
-  int     servoIndex;
-  uint8_t servoPin;
-} ISR_servo_t;
-
-#define NUM_SERVOS            6
-
-ISR_servo_t ISR_servo[] =
-{
-  { -1, SERVO_PIN_1 }, { -1, SERVO_PIN_2 }, { -1, SERVO_PIN_3 }, { -1, SERVO_PIN_4 }, { -1, SERVO_PIN_5 }, { -1, SERVO_PIN_6 }
-};
-
-
-void setup()
-{ 
-  Serial.begin(115200);
-  while (!Serial);
-
-  delay(200);
-
-  Serial.print(F("\nStarting NRF52_MultipleRandomServos on ")); Serial.println(BOARD_NAME);
-  Serial.println(NRF52_ISR_SERVO_VERSION);
-
-  for (int index = 0; index < NUM_SERVOS; index++)
-  {
-    ISR_servo[index].servoIndex = NRF52_ISR_Servos.setupServo(ISR_servo[index].servoPin, MIN_MICROS, MAX_MICROS);
-
-    if (ISR_servo[index].servoIndex != -1)
-    {
-      Serial.print(F("Setup OK Servo index = ")); Serial.println(ISR_servo[index].servoIndex);
-      NRF52_ISR_Servos.setPosition(ISR_servo[index].servoIndex, 0);
-    }
-    else
-    {
-      Serial.print(F("Setup Failed Servo index = ")); Serial.println(ISR_servo[index].servoIndex);
-    }
-  }
-}
-
-void printServoInfo(int indexServo)
-{
-  Serial.print(F("Servos idx = "));
-  Serial.print(indexServo);
-  Serial.print(F(", act. pos. (deg) = "));
-  Serial.print(NRF52_ISR_Servos.getPosition(ISR_servo[indexServo].servoIndex) );
-  Serial.print(F(", pulseWidth (us) = "));
-  Serial.println(NRF52_ISR_Servos.getPulseWidth(ISR_servo[indexServo].servoIndex));
-}
-
-void loop()
-{
-  int position;      // position in degrees
-
-  position = 0;
-  Serial.println(F("Servos @ 0 degree"));
-  
-  for (int index = 0; index < NUM_SERVOS; index++)
-  {
-    NRF52_ISR_Servos.setPosition(ISR_servo[index].servoIndex, position );
-    printServoInfo(index);
-  }
-  // waits 5s between test
-  delay(5000);
-
-  position = 90;
-  Serial.println(F("Servos @ 90 degree"));
-  
-  for (int index = 0; index < NUM_SERVOS; index++)
-  {
-    NRF52_ISR_Servos.setPosition(ISR_servo[index].servoIndex, position );
-    printServoInfo(index);
-  }
-  
-  // waits 5s between test
-  delay(5000);
-
-  position = 180;
-  Serial.println(F("Servos @ 180 degree"));
-  
-  for (int index = 0; index < NUM_SERVOS; index++)
-  {
-    NRF52_ISR_Servos.setPosition(ISR_servo[index].servoIndex, position );
-    printServoInfo(index);
-  }
-  
-  // waits 5s between test
-  delay(5000);
-
-  Serial.println(F("Servos sweeps from 0-180 degress"));
-  
-  for (position = 0; position <= 180; position += 5)
-  {
-    // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    for (int index = 0; index < NUM_SERVOS; index++)
-    {
-      NRF52_ISR_Servos.setPosition(ISR_servo[index].servoIndex, position );
-    }
-    
-    // waits 0.1s for the servo to reach the position
-    delay(100);
-  }
-  
-  // waits 5s between test
-  delay(5000);
-}
-```
+https://github.com/khoih-prog/NRF52_ISR_Servo/blob/4260125278f38956f8fdeaca58249ecd80b5b437/examples/nRF52_MultipleRandomServos/nRF52_MultipleRandomServos.ino#L45-L175
 
 ---
 ---
@@ -309,7 +211,8 @@ void loop()
 ### Examples: 
 
  1. [nRF52_MultipleRandomServos](examples/nRF52_MultipleRandomServos) 
- 2. [nRF52_MultipleServos](examples/nRF52_MultipleServos) 
+ 2. [nRF52_MultipleServos](examples/nRF52_MultipleServos)
+ 3. [**multiFileProject**](examples/multiFileProject) **New**
  
 ---
 
@@ -318,89 +221,8 @@ void loop()
 
 #### 1. File [nRF52_MultipleServos.ino](examples/nRF52_MultipleServos/nRF52_MultipleServos.ino)
 
-```cpp
-#if !(defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
-      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || \
-      defined(NRF52840_CLUE) || defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || \
-      defined(MDBT50Q_RX) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-  #error This code is designed to run on nRF52 platform! Please check your Tools->Board setting.
-#endif
+https://github.com/khoih-prog/NRF52_ISR_Servo/blob/4260125278f38956f8fdeaca58249ecd80b5b437/examples/nRF52_MultipleServos/nRF52_MultipleServos.ino#L45-L126
 
-#define TIMER_INTERRUPT_DEBUG       1
-#define ISR_SERVO_DEBUG             1
-
-#include "NRF52_ISR_Servo.h"
-
-// Published values for SG90 servos; adjust if needed
-#define MIN_MICROS        800
-#define MAX_MICROS        2450
-
-#define SERVO_PIN_1       A0
-#define SERVO_PIN_2       A1
-#define SERVO_PIN_3       A2
-#define SERVO_PIN_4       A3
-#define SERVO_PIN_5       A4
-#define SERVO_PIN_6       A5
-
-typedef struct
-{
-  int     servoIndex;
-  uint8_t servoPin;
-} ISR_servo_t;
-
-#define NUM_SERVOS            6
-
-ISR_servo_t ISR_servo[] =
-{
-  { -1, SERVO_PIN_1 }, { -1, SERVO_PIN_2 }, { -1, SERVO_PIN_3 }, { -1, SERVO_PIN_4 }, { -1, SERVO_PIN_5 }, { -1, SERVO_PIN_6 }
-};
-
-void setup()
-{ 
-  Serial.begin(115200);
-  while (!Serial);
-
-  delay(200);
-
-  Serial.print(F("\nStarting NRF52_MultipleServos on ")); Serial.println(BOARD_NAME);
-  Serial.println(NRF52_ISR_SERVO_VERSION);
- 
-  for (int index = 0; index < NUM_SERVOS; index++)
-  {
-    ISR_servo[index].servoIndex = NRF52_ISR_Servos.setupServo(ISR_servo[index].servoPin, MIN_MICROS, MAX_MICROS);
-
-    if (ISR_servo[index].servoIndex != -1)
-    {
-      Serial.print(F("Setup OK, Servo index = ")); Serial.println(ISR_servo[index].servoIndex);
-      NRF52_ISR_Servos.setPosition(ISR_servo[index].servoIndex, 0);
-    }
-    else
-    {
-      Serial.print(F("Setup Failed, Servo index = ")); Serial.println(ISR_servo[index].servoIndex);
-    }
-  }
-}
-
-void loop()
-{
-  int position;      // position in degrees
-
-  for (position = 0; position <= 180; position += 10)
-  {
-    // goes from 0 degrees to 180 degrees
-    // in steps of 10 degree
-    for (int index = 0; index < NUM_SERVOS; index++)
-    {
-      NRF52_ISR_Servos.setPosition(ISR_servo[index].servoIndex, position);
-    }
-    
-    // waits 1s for the servo to reach the position
-    delay(1000);
-  }
-
-  delay(5000);
-}
-```
 ---
 ---
 
@@ -411,7 +233,7 @@ void loop()
 
 ```
 Starting NRF52_MultipleRandomServos on NRF52840_FEATHER
-NRF52_ISR_Servo v1.0.0
+NRF52_ISR_Servo v1.1.0
 Setup OK Servo index = 0
 Setup OK Servo index = 1
 Setup OK Servo index = 2
@@ -484,7 +306,7 @@ Servos sweeps from 0-180 degree
 
 ```
 Starting NRF52_MultipleRandomServos on NRF52840_ITSYBITSY
-NRF52_ISR_Servo v1.0.0
+NRF52_ISR_Servo v1.1.0
 Setup OK Servo index = 0
 Setup OK Servo index = 1
 Setup OK Servo index = 2
@@ -578,16 +400,6 @@ Sometimes, the library will only work if you update the board core to the latest
 ---
 ---
 
-## Releases
-
-### Releases v1.0.0
-
-1. Basic 16 ISR-based servo controllers using 1 hardware PWM module for nRF52-based board
-2. Support to both nRF52832 and nRF52840
-
----
----
-
 ### Issues
 
 Submit issues to: [NRF52_ISR_Servo issues](https://github.com/khoih-prog/NRF52_ISR_Servo/issues)
@@ -607,6 +419,11 @@ Submit issues to: [NRF52_ISR_Servo issues](https://github.com/khoih-prog/NRF52_I
 2. Add functions `getPosition()` and `getPulseWidth()`
 3. Optimize the code
 4. Add complicated examples
+5. Convert to `h-only` style.
+6. Add example [multiFileProject](examples/multiFileProject) to demo for multiple-file project
+7. Optimize code by using passing by `reference` instead of by `value`
+8. Add support to `Sparkfun Pro nRF52840 Mini`
+
 
 ---
 ---
