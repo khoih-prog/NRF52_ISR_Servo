@@ -8,19 +8,6 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/NRF52_ISR_Servo
   Licensed under MIT license
-
-  Based on SimpleTimer - A timer library for Arduino.
-  Author: mromani@ottotecnica.com
-  Copyright (c) 2010 OTTOTECNICA Italy
-
-  Based on BlynkTimer.h
-  Author: Volodymyr Shymanskyy
-
-  Version: 1.0.0
-
-  Version Modified By   Date      Comments
-  ------- -----------  ---------- -----------
-  1.0.0   K Hoang      22/08/2021 Initial coding for nRF52832/nRF52840 boards
 *****************************************************************************************************************************/
 
 /****************************************************************************************************************************
@@ -65,6 +52,7 @@
 #define TIMER_INTERRUPT_DEBUG       4
 #define ISR_SERVO_DEBUG             4
 
+// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "NRF52_ISR_Servo.h"
 
 // Published values for SG90 servos; adjust if needed
@@ -80,7 +68,7 @@
 
 typedef struct
 {
-  int     servoIndex;
+  int8_t  servoIndex;
   uint8_t servoPin;
 } ISR_servo_t;
 
