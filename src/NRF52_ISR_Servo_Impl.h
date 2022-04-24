@@ -9,12 +9,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/NRF52_ISR_Servo
   Licensed under MIT license
 
-  Version: 1.1.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      22/08/2021 Initial coding for nRF52832/nRF52840 boards
   1.1.0   K Hoang      03/03/2022 Convert to `h-only` style. Optimize code. Add support to `Sparkfun Pro nRF52840 Mini`
+  1.2.0   K Hoang      23/04/2022 Permit using servos with different pulse ranges simultaneously. Delete left-over `cpp`
  *****************************************************************************************************************************/
 
 #pragma once
@@ -65,7 +66,8 @@ int8_t NRF52_ISR_Servo::findFirstFreeSlot()
 
 //////////////////////////////////////////////////
 
-int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minUs, const uint16_t& maxUs, int value)
+//int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minUs, const uint16_t& maxUs, int value)
+int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minPulseUs, const uint16_t& maxPulseUs, uint16_t value)
 {
   int8_t servoIndex;
     
@@ -81,10 +83,10 @@ int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minUs, co
     return -1;
     
   pinMode(pin, OUTPUT);
-   
-  _maxUs = maxUs;
-  _minUs = minUs;
   
+  servo[servoIndex].maxPulseUs = maxPulseUs;
+  servo[servoIndex].minPulseUs = minPulseUs;
+    
   servo[servoIndex].position = 0;
 
   numServos++;
@@ -139,7 +141,7 @@ int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minUs, co
   ///////////////////////////////////////////
  
   ISR_SERVO_LOGDEBUG1("Index =", servoIndex);
-  ISR_SERVO_LOGDEBUG3("min =", _minUs, ", max =", _maxUs);
+  ISR_SERVO_LOGDEBUG3("min =", servo[servoIndex].minPulseUs, ", max =", servo[servoIndex].maxPulseUs);
   
   Serial.print("setupServo Index ="); Serial.println(servoIndex);
  
@@ -155,7 +157,7 @@ void NRF52_ISR_Servo::write(const uint8_t& servoIndex, uint16_t value)
   {
     // assumed to be 0-180 degrees servo
     value = constrain(value, 0, 180);
-    value = map(value, 0, 180, _minUs, _maxUs);
+    value = map(value, 0, 180, servo[servoIndex].minPulseUs, servo[servoIndex].maxPulseUs);
   }
   
   writeMicroseconds(servoIndex, value);
@@ -165,7 +167,7 @@ void NRF52_ISR_Servo::write(const uint8_t& servoIndex, uint16_t value)
 
 void NRF52_ISR_Servo::writeMicroseconds(const uint8_t& servoIndex, uint16_t value) 
 {
-  value = constrain(value, _minUs, _maxUs);
+  value = constrain(value, servo[servoIndex].minPulseUs, servo[servoIndex].maxPulseUs);
   servo[servoIndex].position = value;
 
   if ( (servo[servoIndex].enabled) && (servo[servoIndex].pwm) )
@@ -189,7 +191,7 @@ bool NRF52_ISR_Servo::setPosition(const uint8_t& servoIndex, uint16_t position)
     {
       // assumed to be 0-180 degrees servo
       position = constrain(position, 0, 180);
-      position = map(position, 0, 180, _minUs, _maxUs);
+      position = map(position, 0, 180, servo[servoIndex].minPulseUs, servo[servoIndex].maxPulseUs);
     }
     
     servo[servoIndex].position = position;
@@ -239,12 +241,12 @@ bool NRF52_ISR_Servo::setPulseWidth(const uint8_t& servoIndex, uint16_t& pulseWi
   // Updates interval of existing specified servo
   if ( servo[servoIndex].enabled && (servo[servoIndex].pin <= NRF52_MAX_PIN) )
   {
-    if (pulseWidth < _minUs)
-      pulseWidth = _minUs;
-    else if (pulseWidth > _maxUs)
-      pulseWidth = _maxUs;
+    if (pulseWidth < servo[servoIndex].minPulseUs)
+      pulseWidth = servo[servoIndex].minPulseUs;
+    else if (pulseWidth > servo[servoIndex].maxPulseUs)
+      pulseWidth = servo[servoIndex].maxPulseUs;
 
-    servo[servoIndex].position  = map(pulseWidth, _minUs, _maxUs, 0, 180);
+    servo[servoIndex].position  = map(pulseWidth, servo[servoIndex].minPulseUs, servo[servoIndex].maxPulseUs, 0, 180);
 
     ISR_SERVO_LOGERROR3("Idx =", servoIndex, ", pos =",servo[servoIndex].position);
 
@@ -344,7 +346,7 @@ bool NRF52_ISR_Servo::enable(const uint8_t& servoIndex)
     return false;
   }
 
-  if ( servo[servoIndex].position >= _minUs )
+  if ( servo[servoIndex].position >= servo[servoIndex].minPulseUs )
     servo[servoIndex].enabled = true;
 
   return true;
@@ -373,7 +375,7 @@ void NRF52_ISR_Servo::enableAll()
 
   for (int8_t servoIndex = 0; servoIndex < MAX_SERVOS; servoIndex++)
   {
-    if ( (servo[servoIndex].position >= _minUs) && !servo[servoIndex].enabled 
+    if ( (servo[servoIndex].position >= servo[servoIndex].minPulseUs) && !servo[servoIndex].enabled 
       && (servo[servoIndex].pin <= NRF52_MAX_PIN) )
     {
       servo[servoIndex].enabled = true;

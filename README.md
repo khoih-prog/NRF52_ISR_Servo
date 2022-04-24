@@ -232,7 +232,7 @@ https://github.com/khoih-prog/NRF52_ISR_Servo/blob/4260125278f38956f8fdeaca58249
 
 ```
 Starting NRF52_MultipleRandomServos on NRF52840_FEATHER
-NRF52_ISR_Servo v1.1.0
+NRF52_ISR_Servo v1.2.0
 Setup OK Servo index = 0
 Setup OK Servo index = 1
 Setup OK Servo index = 2
@@ -305,7 +305,7 @@ Servos sweeps from 0-180 degree
 
 ```
 Starting NRF52_MultipleRandomServos on NRF52840_ITSYBITSY
-NRF52_ISR_Servo v1.1.0
+NRF52_ISR_Servo v1.2.0
 Setup OK Servo index = 0
 Setup OK Servo index = 1
 Setup OK Servo index = 2
@@ -422,7 +422,7 @@ Submit issues to: [NRF52_ISR_Servo issues](https://github.com/khoih-prog/NRF52_I
 6. Add example [multiFileProject](examples/multiFileProject) to demo for multiple-file project
 7. Optimize code by using passing by `reference` instead of by `value`
 8. Add support to `Sparkfun Pro nRF52840 Mini`
-
+9. Permit using servos with different pulse ranges simultaneously
 
 ---
 ---

@@ -52,7 +52,6 @@
 #define TIMER_INTERRUPT_DEBUG       4
 #define ISR_SERVO_DEBUG             4
 
-// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "NRF52_ISR_Servo.h"
 
 // Published values for SG90 servos; adjust if needed
@@ -68,7 +67,7 @@
 
 typedef struct
 {
-  int8_t  servoIndex;
+  int     servoIndex;
   uint8_t servoPin;
 } ISR_servo_t;
 

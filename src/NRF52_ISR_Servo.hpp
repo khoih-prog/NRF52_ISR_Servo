@@ -9,12 +9,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/NRF52_ISR_Servo
   Licensed under MIT license
 
-  Version: 1.1.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      22/08/2021 Initial coding for nRF52832/nRF52840 boards
   1.1.0   K Hoang      03/03/2022 Convert to `h-only` style. Optimize code. Add support to `Sparkfun Pro nRF52840 Mini`
+  1.2.0   K Hoang      23/04/2022 Permit using servos with different pulse ranges simultaneously. Delete left-over `cpp`
  *****************************************************************************************************************************/
 
 #pragma once
@@ -33,13 +34,13 @@
 #include <Adafruit_TinyUSB.h>
 
 #if !defined(NRF52_ISR_SERVO_VERSION)
-  #define NRF52_ISR_SERVO_VERSION             "NRF52_ISR_Servo v1.1.0"
+  #define NRF52_ISR_SERVO_VERSION             "NRF52_ISR_Servo v1.2.0"
   
   #define NRF52_ISR_SERVO_VERSION_MAJOR       1
-  #define NRF52_ISR_SERVO_VERSION_MINOR       1
+  #define NRF52_ISR_SERVO_VERSION_MINOR       2
   #define NRF52_ISR_SERVO_VERSION_PATCH       0
 
-  #define NRF52_ISR_SERVO_VERSION_INT         1001000
+  #define NRF52_ISR_SERVO_VERSION_INT         1002000
   
 #endif
 
@@ -104,7 +105,9 @@ class NRF52_ISR_Servo
     //////////////////////////////////////////////////
 
     // Bind servo to the timer and pin, return servoIndex
-    int8_t setupServo(const uint8_t& pin, const uint16_t& minUs = MIN_PULSE_WIDTH, const uint16_t& maxUs = MAX_PULSE_WIDTH, int value = 0);
+    //int8_t setupServo(const uint8_t& pin, const uint16_t& minUs = MIN_PULSE_WIDTH, const uint16_t& maxUs = MAX_PULSE_WIDTH, int value = 0);
+    int8_t setupServo(const uint8_t& pin, const uint16_t& minPulseUs = MIN_PULSE_WIDTH, 
+                      const uint16_t& maxPulseUs = MAX_PULSE_WIDTH, uint16_t value = 0);
     
     // if value is < MIN_PULSE_WIDTH its treated as an angle, otherwise as pulse width in microseconds
     void write(const uint8_t& servoIndex, uint16_t value);
@@ -186,14 +189,14 @@ class NRF52_ISR_Servo
     
     //////////////////////////////////////////////////
     
-    uint16_t      _minUs;
-    uint16_t      _maxUs;
-
     typedef struct
     {
       uint8_t       pin;                  // pin servo connected to
       int           position;             // In degrees
       bool          enabled;              // true if enabled
+      
+      uint16_t      minPulseUs;           // The minimum pulse width the servo can handle
+      uint16_t      maxPulseUs;           // The maximum pulse width the servo can handle
       
       HardwarePWM* pwm;
     } servo_t;

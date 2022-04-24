@@ -52,7 +52,6 @@
 #define TIMER_INTERRUPT_DEBUG       1
 #define ISR_SERVO_DEBUG             1
 
-// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "NRF52_ISR_Servo.h"
 
 // Published values for SG90 servos; adjust if needed
@@ -68,7 +67,7 @@
 
 typedef struct
 {
-  int8_t  servoIndex;
+  int     servoIndex;
   uint8_t servoPin;
 } ISR_servo_t;
 
@@ -89,7 +88,7 @@ void setup()
   Serial.print(F("\nStarting NRF52_MultipleServos on ")); Serial.println(BOARD_NAME);
   Serial.println(NRF52_ISR_SERVO_VERSION);
  
-  for (int8_t index = 0; index < NUM_SERVOS; index++)
+  for (int index = 0; index < NUM_SERVOS; index++)
   {
     ISR_servo[index].servoIndex = NRF52_ISR_Servos.setupServo(ISR_servo[index].servoPin, MIN_MICROS, MAX_MICROS);
 
