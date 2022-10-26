@@ -1,6 +1,6 @@
 {
   "name": "NRF52_ISR_Servo",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "keywords": "timing, device, control, timer, interrupt, isr, pwm, servo, isr-servo, hardware-timer, mission-critical, accuracy, precise, non-blocking, nrf52, nrf52840, nrf52832, feather-nrf52840, sparkfun-nrf52840, itsybitsy-nrf52840",
   "description": "This library enables you to use 1 Hardware PWM module on nRF52832/nRF52840-based board, such as AdaFruit Feather nRF52832, nRF52840 Express, Itsy-Bitsy nRF52840 Express, etc. to control up to 16 or more servo motors.",
   "authors":

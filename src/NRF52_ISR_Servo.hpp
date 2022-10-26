@@ -9,13 +9,14 @@
   Built by Khoi Hoang https://github.com/khoih-prog/NRF52_ISR_Servo
   Licensed under MIT license
 
-  Version: 1.2.0
+  Version: 1.2.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      22/08/2021 Initial coding for nRF52832/nRF52840 boards
   1.1.0   K Hoang      03/03/2022 Convert to `h-only` style. Optimize code. Add support to `Sparkfun Pro nRF52840 Mini`
   1.2.0   K Hoang      23/04/2022 Permit using servos with different pulse ranges simultaneously. Delete left-over `cpp`
+  1.2.1   K Hoang      26/10/2022 Add support to Seeed_XIAO_NRF52840 and Seeed_XIAO_NRF52840_SENSE
  *****************************************************************************************************************************/
 
 #pragma once
@@ -23,24 +24,39 @@
 #ifndef NRF52_ISR_Servo_HPP
 #define NRF52_ISR_Servo_HPP
 
+////////////////////////////////////////
+
 #if !(defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
       defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || \
       defined(NRF52840_CLUE) || defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || \
-      defined(MDBT50Q_RX) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-  #error This code is designed to run on nRF52 platform! Please check your Tools->Board setting.
+      defined(NRF52840_LED_GLASSES) || defined(MDBT50Q_RX) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) || \
+      defined(ARDUINO_Seeed_XIAO_nRF52840) || defined(ARDUINO_Seeed_XIAO_nRF52840_Sense) )
+  #error This code is designed to run on Adafruit or Seeed nRF52 platform! Please check your Tools->Board setting.
 #endif
+
+////////////////////////////////////////
+
+#if !defined(BOARD_NAME)
+	#if defined(ARDUINO_Seeed_XIAO_nRF52840)
+		#define BOARD_NAME		"Seeed_XIAO_nRF52840"
+	#elif defined(ARDUINO_Seeed_XIAO_nRF52840_Sense)
+		#define BOARD_NAME		"Seeed_XIAO_nRF52840_Sense"
+	#endif
+#endif
+
+////////////////////////////////////////
 
 #include "Arduino.h"
 #include <Adafruit_TinyUSB.h>
 
 #if !defined(NRF52_ISR_SERVO_VERSION)
-  #define NRF52_ISR_SERVO_VERSION             "NRF52_ISR_Servo v1.2.0"
+  #define NRF52_ISR_SERVO_VERSION             "NRF52_ISR_Servo v1.2.1"
   
   #define NRF52_ISR_SERVO_VERSION_MAJOR       1
   #define NRF52_ISR_SERVO_VERSION_MINOR       2
-  #define NRF52_ISR_SERVO_VERSION_PATCH       0
+  #define NRF52_ISR_SERVO_VERSION_PATCH       1
 
-  #define NRF52_ISR_SERVO_VERSION_INT         1002000
+  #define NRF52_ISR_SERVO_VERSION_INT         1002001
   
 #endif
 
@@ -65,12 +81,16 @@
 #define NRF52_MAX_PIN           NUM_DIGITAL_PINS
 #define NRF52_WRONG_PIN         255
 
+////////////////////////////////////////
+
 // From Servo.h - Copyright (c) 2009 Michael Margolis.  All right reserved.
 
 #define MIN_PULSE_WIDTH         800       // the shortest pulse sent to a servo  
 #define MAX_PULSE_WIDTH         2450      // the longest pulse sent to a servo 
 #define DEFAULT_PULSE_WIDTH     1500      // default pulse width when servo is attached
 #define REFRESH_INTERVAL        20000     // minumim time to refresh servos in microseconds 
+
+////////////////////////////////////////
 
 /**
  * NRF52 Only definitions
@@ -83,10 +103,14 @@
 #define MAXVALUE                  MAX_PULSE_WIDTH
 #define CLOCKDIV                  PWM_PRESCALER_PRESCALER_DIV_128
 
+////////////////////////////////////////
+
 enum
 {
   SERVO_TOKEN = 0x76726553 // 'S' 'e' 'r' 'v'
 };
+
+////////////////////////////////////////
 
 class NRF52_ISR_Servo
 {
@@ -101,11 +125,10 @@ class NRF52_ISR_Servo
     ~NRF52_ISR_Servo()
     {
     }
-    
-    //////////////////////////////////////////////////
+
+    ////////////////////////////////////////
 
     // Bind servo to the timer and pin, return servoIndex
-    //int8_t setupServo(const uint8_t& pin, const uint16_t& minUs = MIN_PULSE_WIDTH, const uint16_t& maxUs = MAX_PULSE_WIDTH, int value = 0);
     int8_t setupServo(const uint8_t& pin, const uint16_t& minPulseUs = MIN_PULSE_WIDTH, 
                       const uint16_t& maxPulseUs = MAX_PULSE_WIDTH, uint16_t value = 0);
     
@@ -157,8 +180,10 @@ class NRF52_ISR_Servo
     // returns the number of used servos
     int8_t getNumServos();
 
+    ////////////////////////////////////////
+
     // returns the number of available servos
-    int8_t getNumAvailableServos() 
+    inline int8_t getNumAvailableServos() 
     {
       if (numServos <= 0)
         return MAX_SERVOS;
@@ -166,7 +191,11 @@ class NRF52_ISR_Servo
         return MAX_SERVOS - numServos;
     };
 
+    ////////////////////////////////////////
+
   private:
+
+    ////////////////////////////////////////
 
     void init()
     {
@@ -181,14 +210,14 @@ class NRF52_ISR_Servo
 
       numServos   = 0;
     }
-    
-    //////////////////////////////////////////////////
+
+    ////////////////////////////////////////
 
     // find the first available slot
     int8_t findFirstFreeSlot();
-    
-    //////////////////////////////////////////////////
-    
+
+    ////////////////////////////////////////
+
     typedef struct
     {
       uint8_t       pin;                  // pin servo connected to
@@ -200,14 +229,15 @@ class NRF52_ISR_Servo
       
       HardwarePWM* pwm;
     } servo_t;
-    
-    //////////////////////////////////////////////////
-    
+
+    ////////////////////////////////////////
+
     volatile servo_t servo[MAX_SERVOS];
 
     // actual number of servos in use (-1 means uninitialized)
     volatile int8_t numServos;
 };
 
+////////////////////////////////////////
 
 #endif    // NRF52_ISR_Servo_HPP

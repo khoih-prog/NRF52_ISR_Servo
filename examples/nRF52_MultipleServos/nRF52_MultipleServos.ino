@@ -1,9 +1,9 @@
 /****************************************************************************************************************************
   NRF52_MultipleServos.ino
   For :
-  - nRF52832-based boards such as AdaFruit Feather nRF52832, 
+  - nRF52832-based boards such as AdaFruit Feather nRF52832,
   - nRF52840-based boards such as Adafruit nRF52840 Express, Itsy-Bitsy nRF52840 Express, NINA_B302_ublox, etc.
-  
+
   Written by Khoi Hoang
 
   Built by Khoi Hoang https://github.com/khoih-prog/NRF52_ISR_Servo
@@ -30,7 +30,7 @@
    considerable power, we will connect servo power to the VBat pin of the NRF52 (located
    near the USB connector). THIS IS ONLY APPROPRIATE FOR SMALL SERVOS.
 
-   We could also connect servo power to a separate external power source (as long as we connect all of 
+   We could also connect servo power to a separate external power source (as long as we connect all of
    the grounds (NRF52, servo, and external power).
    In this example, we just connect NRF52 ground to servo ground. The servo signal pins
    connect to any available GPIO pins on the NRF52 (in this example, we use pins (D1-D6).
@@ -41,13 +41,6 @@
    if you are particular, adjust the min and max values to match your needs.
    Experimentally, 800 and 2450 are pretty close to 0 and 180.
 *****************************************************************************************************************************/
-
-#if !(defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
-      defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || \
-      defined(NRF52840_CLUE) || defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || \
-      defined(MDBT50Q_RX) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-  #error This code is designed to run on nRF52 platform! Please check your Tools->Board setting.
-#endif
 
 #define TIMER_INTERRUPT_DEBUG       1
 #define ISR_SERVO_DEBUG             1
@@ -79,27 +72,30 @@ ISR_servo_t ISR_servo[] =
 };
 
 void setup()
-{ 
+{
   Serial.begin(115200);
-  while (!Serial);
+
+  while (!Serial && millis() < 5000);
 
   delay(200);
 
   Serial.print(F("\nStarting NRF52_MultipleServos on ")); Serial.println(BOARD_NAME);
   Serial.println(NRF52_ISR_SERVO_VERSION);
- 
+
   for (int index = 0; index < NUM_SERVOS; index++)
   {
     ISR_servo[index].servoIndex = NRF52_ISR_Servos.setupServo(ISR_servo[index].servoPin, MIN_MICROS, MAX_MICROS);
 
     if (ISR_servo[index].servoIndex != -1)
     {
-      Serial.print(F("Setup OK, Servo index = ")); Serial.println(ISR_servo[index].servoIndex);
+      Serial.print(F("Setup OK, Servo index = "));
+      Serial.println(ISR_servo[index].servoIndex);
       NRF52_ISR_Servos.setPosition(ISR_servo[index].servoIndex, 0);
     }
     else
     {
-      Serial.print(F("Setup Failed, Servo index = ")); Serial.println(ISR_servo[index].servoIndex);
+      Serial.print(F("Setup Failed, Servo index = "));
+      Serial.println(ISR_servo[index].servoIndex);
     }
   }
 }
@@ -116,7 +112,7 @@ void loop()
     {
       NRF52_ISR_Servos.setPosition(ISR_servo[index].servoIndex, position);
     }
-    
+
     // waits 1s for the servo to reach the position
     delay(1000);
   }

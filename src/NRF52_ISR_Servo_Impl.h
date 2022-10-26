@@ -1,21 +1,22 @@
 /****************************************************************************************************************************
   NRF52_ISR_Servo_Impl.h
   For :
-  - nRF52832-based boards such as AdaFruit Feather nRF52832, 
+  - nRF52832-based boards such as AdaFruit Feather nRF52832,
   - nRF52840-based boards such as Adafruit nRF52840 Express, Itsy-Bitsy nRF52840 Express, NINA_B302_ublox, etc.
-  
+
   Written by Khoi Hoang
 
   Built by Khoi Hoang https://github.com/khoih-prog/NRF52_ISR_Servo
   Licensed under MIT license
 
-  Version: 1.2.0
+  Version: 1.2.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      22/08/2021 Initial coding for nRF52832/nRF52840 boards
   1.1.0   K Hoang      03/03/2022 Convert to `h-only` style. Optimize code. Add support to `Sparkfun Pro nRF52840 Mini`
   1.2.0   K Hoang      23/04/2022 Permit using servos with different pulse ranges simultaneously. Delete left-over `cpp`
+  1.2.1   K Hoang      26/10/2022 Add support to Seeed_XIAO_NRF52840 and Seeed_XIAO_NRF52840_SENSE
  *****************************************************************************************************************************/
 
 #pragma once
@@ -23,23 +24,29 @@
 #ifndef NRF52_ISR_SERVO_IMPL_H
 #define NRF52_ISR_SERVO_IMPL_H
 
+////////////////////////////////////////
+
 #include <string.h>
+
+////////////////////////////////////////
 
 #ifndef ISR_SERVO_DEBUG
   #define ISR_SERVO_DEBUG               1
 #endif
 
+////////////////////////////////////////
+
 #define DEFAULT_NRF52_TIMER_NO          NRF_TIMER_1       // NRF_TIMER_1 for many boards
 
 static NRF52_ISR_Servo NRF52_ISR_Servos;  // create servo object to control up to 16 servos
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 NRF52_ISR_Servo::NRF52_ISR_Servo() : numServos (-1)
 {
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 // find the first available slot
 // return -1 if none found
@@ -64,13 +71,14 @@ int8_t NRF52_ISR_Servo::findFirstFreeSlot()
   return -1;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 //int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minUs, const uint16_t& maxUs, int value)
-int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minPulseUs, const uint16_t& maxPulseUs, uint16_t value)
+int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minPulseUs, const uint16_t& maxPulseUs,
+                                   uint16_t value)
 {
   int8_t servoIndex;
-    
+
   if (pin > NRF52_MAX_PIN)
     return -1;
 
@@ -78,23 +86,23 @@ int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minPulseU
     init();
 
   servoIndex = findFirstFreeSlot();
-  
+
   if (servoIndex < 0)
     return -1;
-    
+
   pinMode(pin, OUTPUT);
-  
+
   servo[servoIndex].maxPulseUs = maxPulseUs;
   servo[servoIndex].minPulseUs = minPulseUs;
-    
+
   servo[servoIndex].position = 0;
 
   numServos++;
-  
+
   ///////////////////////////////////////////
-  
+
   bool succeeded = false;
-  
+
   // Adafruit, add pin to 1 of available Hw PWM
   // first, use existing HWPWM modules (already owned by Servo)
   for ( int i = 0; i < HWPWM_MODULE_NUM; i++ )
@@ -124,10 +132,10 @@ int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minPulseU
   if ( succeeded )
   {
     pinMode(pin, OUTPUT);
-    
+
     servo[servoIndex].pin     = pin;
     servo[servoIndex].enabled = true;
-    
+
     servo[servoIndex].pwm->setMaxValue(MAXVALUE);
     servo[servoIndex].pwm->setClockDiv(CLOCKDIV);
 
@@ -137,18 +145,19 @@ int8_t NRF52_ISR_Servo::setupServo(const uint8_t& pin, const uint16_t& minPulseU
   {
     return -1;
   }
-  
+
   ///////////////////////////////////////////
- 
+
   ISR_SERVO_LOGDEBUG1("Index =", servoIndex);
   ISR_SERVO_LOGDEBUG3("min =", servo[servoIndex].minPulseUs, ", max =", servo[servoIndex].maxPulseUs);
-  
-  Serial.print("setupServo Index ="); Serial.println(servoIndex);
- 
+
+  Serial.print("setupServo Index =");
+  Serial.println(servoIndex);
+
   return servoIndex;
 }
 
-/////////////////////////////////////////////////////
+//////////////////////////////////////////
 
 void NRF52_ISR_Servo::write(const uint8_t& servoIndex, uint16_t value)
 {
@@ -159,24 +168,24 @@ void NRF52_ISR_Servo::write(const uint8_t& servoIndex, uint16_t value)
     value = constrain(value, 0, 180);
     value = map(value, 0, 180, servo[servoIndex].minPulseUs, servo[servoIndex].maxPulseUs);
   }
-  
+
   writeMicroseconds(servoIndex, value);
 }
 
-/////////////////////////////////////////////////////
+//////////////////////////////////////////
 
-void NRF52_ISR_Servo::writeMicroseconds(const uint8_t& servoIndex, uint16_t value) 
+void NRF52_ISR_Servo::writeMicroseconds(const uint8_t& servoIndex, uint16_t value)
 {
   value = constrain(value, servo[servoIndex].minPulseUs, servo[servoIndex].maxPulseUs);
   servo[servoIndex].position = value;
 
   if ( (servo[servoIndex].enabled) && (servo[servoIndex].pwm) )
   {
-  	servo[servoIndex].pwm->writePin(servo[servoIndex].pin, value/DUTY_CYCLE_RESOLUTION);
+    servo[servoIndex].pwm->writePin(servo[servoIndex].pin, value / DUTY_CYCLE_RESOLUTION);
   }
 }
 
-/////////////////////////////////////////////////////
+//////////////////////////////////////////
 
 bool NRF52_ISR_Servo::setPosition(const uint8_t& servoIndex, uint16_t position)
 {
@@ -185,20 +194,20 @@ bool NRF52_ISR_Servo::setPosition(const uint8_t& servoIndex, uint16_t position)
 
   // Updates interval of existing specified servo
   if ( servo[servoIndex].enabled && (servo[servoIndex].pin <= NRF52_MAX_PIN) )
-  {   
+  {
     // treat any value less than MIN_PULSE_WIDTH as angle in degrees (values equal or larger are handled as microseconds)
-    if (position < MIN_PULSE_WIDTH) 
+    if (position < MIN_PULSE_WIDTH)
     {
       // assumed to be 0-180 degrees servo
       position = constrain(position, 0, 180);
       position = map(position, 0, 180, servo[servoIndex].minPulseUs, servo[servoIndex].maxPulseUs);
     }
-    
+
     servo[servoIndex].position = position;
-    
+
     writeMicroseconds(servoIndex, position);
 
-    ISR_SERVO_LOGDEBUG3("Idx =", servoIndex, ", pos =",servo[servoIndex].position);
+    ISR_SERVO_LOGDEBUG3("Idx =", servoIndex, ", pos =", servo[servoIndex].position);
 
     return true;
   }
@@ -207,7 +216,7 @@ bool NRF52_ISR_Servo::setPosition(const uint8_t& servoIndex, uint16_t position)
   return false;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 // returns last position in degrees if success, or -1 on wrong servoIndex
 int NRF52_ISR_Servo::getPosition(const uint8_t& servoIndex)
@@ -218,7 +227,7 @@ int NRF52_ISR_Servo::getPosition(const uint8_t& servoIndex)
   // Updates interval of existing specified servo
   if ( servo[servoIndex].enabled && (servo[servoIndex].pin <= NRF52_MAX_PIN) )
   {
-    ISR_SERVO_LOGERROR3("Idx =", servoIndex, ", pos =",servo[servoIndex].position);
+    ISR_SERVO_LOGERROR3("Idx =", servoIndex, ", pos =", servo[servoIndex].position);
 
     return (servo[servoIndex].position);
   }
@@ -227,7 +236,7 @@ int NRF52_ISR_Servo::getPosition(const uint8_t& servoIndex)
   return -1;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 // setPulseWidth will set servo PWM Pulse Width in microseconds, correcponding to certain position in degrees
 // by using PWM, turn HIGH 'pulseWidth' microseconds within REFRESH_INTERVAL (20000us)
@@ -248,7 +257,7 @@ bool NRF52_ISR_Servo::setPulseWidth(const uint8_t& servoIndex, uint16_t& pulseWi
 
     servo[servoIndex].position  = map(pulseWidth, servo[servoIndex].minPulseUs, servo[servoIndex].maxPulseUs, 0, 180);
 
-    ISR_SERVO_LOGERROR3("Idx =", servoIndex, ", pos =",servo[servoIndex].position);
+    ISR_SERVO_LOGERROR3("Idx =", servoIndex, ", pos =", servo[servoIndex].position);
 
     return true;
   }
@@ -257,7 +266,7 @@ bool NRF52_ISR_Servo::setPulseWidth(const uint8_t& servoIndex, uint16_t& pulseWi
   return false;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 // returns pulseWidth in microsecs (within min/max range) if success, or 0 on wrong servoIndex
 unsigned int NRF52_ISR_Servo::getPulseWidth(const uint8_t& servoIndex)
@@ -268,7 +277,7 @@ unsigned int NRF52_ISR_Servo::getPulseWidth(const uint8_t& servoIndex)
   // Updates interval of existing specified servo
   if ( servo[servoIndex].enabled && (servo[servoIndex].pin <= NRF52_MAX_PIN) )
   {
-    ISR_SERVO_LOGERROR3("Idx =", servoIndex, ", pos =",servo[servoIndex].position);
+    ISR_SERVO_LOGERROR3("Idx =", servoIndex, ", pos =", servo[servoIndex].position);
 
     return (servo[servoIndex].position);
   }
@@ -277,7 +286,7 @@ unsigned int NRF52_ISR_Servo::getPulseWidth(const uint8_t& servoIndex)
   return 0;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 void NRF52_ISR_Servo::deleteServo(const uint8_t& servoIndex)
 {
@@ -299,13 +308,13 @@ void NRF52_ISR_Servo::deleteServo(const uint8_t& servoIndex)
 
     // update number of servos
     numServos--;
-    
+
     // remove pin from HW PWM
     HardwarePWM * pwm = servo[servoIndex].pwm;
     servo[servoIndex].pwm = nullptr;
     pwm->removePin(servo[servoIndex].pin);
-    
-    if (pwm->usedChannelCount() == 0) 
+
+    if (pwm->usedChannelCount() == 0)
     {
       pwm->stop(); // disables peripheral so can release ownership
       pwm->releaseOwnership(SERVO_TOKEN);
@@ -313,7 +322,7 @@ void NRF52_ISR_Servo::deleteServo(const uint8_t& servoIndex)
   }
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 bool NRF52_ISR_Servo::isEnabled(const uint8_t& servoIndex)
 {
@@ -331,7 +340,7 @@ bool NRF52_ISR_Servo::isEnabled(const uint8_t& servoIndex)
   return servo[servoIndex].enabled;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 bool NRF52_ISR_Servo::enable(const uint8_t& servoIndex)
 {
@@ -352,7 +361,7 @@ bool NRF52_ISR_Servo::enable(const uint8_t& servoIndex)
   return true;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 bool NRF52_ISR_Servo::disable(const uint8_t& servoIndex)
 {
@@ -367,7 +376,7 @@ bool NRF52_ISR_Servo::disable(const uint8_t& servoIndex)
   return true;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 void NRF52_ISR_Servo::enableAll()
 {
@@ -375,15 +384,15 @@ void NRF52_ISR_Servo::enableAll()
 
   for (int8_t servoIndex = 0; servoIndex < MAX_SERVOS; servoIndex++)
   {
-    if ( (servo[servoIndex].position >= servo[servoIndex].minPulseUs) && !servo[servoIndex].enabled 
-      && (servo[servoIndex].pin <= NRF52_MAX_PIN) )
+    if ( (servo[servoIndex].position >= servo[servoIndex].minPulseUs) && !servo[servoIndex].enabled
+         && (servo[servoIndex].pin <= NRF52_MAX_PIN) )
     {
       servo[servoIndex].enabled = true;
     }
   }
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 void NRF52_ISR_Servo::disableAll()
 {
@@ -394,7 +403,7 @@ void NRF52_ISR_Servo::disableAll()
   }
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 bool NRF52_ISR_Servo::toggle(const uint8_t& servoIndex)
 {
@@ -406,7 +415,7 @@ bool NRF52_ISR_Servo::toggle(const uint8_t& servoIndex)
   return true;
 }
 
-//////////////////////////////////////////////////
+////////////////////////////////////////
 
 int8_t NRF52_ISR_Servo::getNumServos()
 {
