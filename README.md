@@ -79,8 +79,9 @@ This library enables you to use `1 Hardware PWM module` on an nRF52-based board 
 
 ### Currently supported Boards
 
-  - **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox etc.**
-  - **Sparkfun Pro nRF52840 Mini**
+1. **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox etc.**
+2. **Sparkfun Pro nRF52840 Mini**
+3. **Seeeduino nRF52840-based boards such as SEEED_XIAO_NRF52840 and SEEED_XIAO_NRF52840_SENSE**, etc. using Seeeduino `nRF%2` core
 
 
 ---
@@ -88,8 +89,9 @@ This library enables you to use `1 Hardware PWM module` on an nRF52-based board 
 
 ## Prerequisites
 
-1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
-2. [`Adafruit nRF52 v1.3.0+`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
+ 1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
+ 2. [`Adafruit nRF52 v1.3.0+`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
+ 3. [`Seeeduino nRF52 core 1.0.0+`](https://github.com/Seeed-Studio/Adafruit_nRF52_Arduino) for Seeeduino nRF52840-based boards such as **Seeed_XIAO_NRF52840 and Seeed_XIAO_NRF52840_SENSE**. [![GitHub release](https://img.shields.io/github/release/Seeed-Studio/Adafruit_nRF52_Arduino.svg)](https://github.com/Seeed-Studio/Adafruit_nRF52_Arduino/releases/latest)
 
 ---
 ---
@@ -148,8 +150,27 @@ These files must be copied into the directory:
 
 ---
 
-To use `Sparkfun Pro nRF52840 Mini`, you must install `Packages_Patches` and use Adafruit nrf52 core v1.0.0+
+#### 2. For Seeeduino nRF52840 boards
 
+**To be able to compile and run on Xiao nRF52840 boards**, you have to copy the whole [nRF52 1.0.0](Packages_Patches/Seeeduino/hardware/nrf52/1.0.0) directory into Seeeduino nRF52 directory (~/.arduino15/packages/Seeeduino/hardware/nrf52/1.0.0). 
+
+Supposing the Seeeduino nRF52 version is 1.0.0. These files must be copied into the directory:
+
+- **`~/.arduino15/packages/Seeeduino/hardware/nrf52/1.0.0/cores/nRF5/Print.h`**
+- **`~/.arduino15/packages/Seeeduino/hardware/nrf52/1.0.0/cores/nRF5/Print.cpp`**
+- **`~/.arduino15/packages/Seeeduino/hardware/nrf52/1.0.0/cores/nRF5/Udp.h`**
+
+Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
+These files must be copied into the directory:
+
+- **`~/.arduino15/packages/Seeeduino/hardware/nrf52/x.yy.z/cores/nRF5/Print.h`**
+- **`~/.arduino15/packages/Seeeduino/hardware/nrf52/x.yy.z/cores/nRF5/Print.cpp`**
+- **`~/.arduino15/packages/Seeeduino/hardware/nrf52/x.yy.z/cores/nRF5/Udp.h`**
+
+
+---
+
+To use `Sparkfun Pro nRF52840 Mini`, you must install `Packages_Patches` and use Adafruit nrf52 core v1.0.0+
 
 ---
 ---
@@ -160,14 +181,14 @@ The current library implementation, using `xyz-Impl.h` instead of standard `xyz.
 
 You can include this `.hpp` file
 
-```
+```cpp
 // Can be included as many times as necessary, without `Multiple Definitions` Linker Error
 #include "NRF52_ISR_Servo.hpp"     //https://github.com/khoih-prog/NRF52_ISR_Servo
 ```
 
 in many files. But be sure to use the following `.h` file **in just 1 `.h`, `.cpp` or `.ino` file**, which must **not be included in any other file**, to avoid `Multiple Definitions` Linker Error
 
-```
+```cpp
 // To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "NRF52_ISR_Servo.h"           //https://github.com/khoih-prog/NRF52_ISR_Servo
 ```
@@ -202,7 +223,7 @@ This non-being-blocked important feature is absolutely necessary for mission-cri
 
 How to use:
 
-https://github.com/khoih-prog/NRF52_ISR_Servo/blob/4260125278f38956f8fdeaca58249ecd80b5b437/examples/nRF52_MultipleRandomServos/nRF52_MultipleRandomServos.ino#L45-L175
+https://github.com/khoih-prog/NRF52_ISR_Servo/blob/b954f20cb0826762417909906c3467bc0d7cc603/examples/nRF52_MultipleRandomServos/nRF52_MultipleRandomServos.ino#L45-L171
 
 ---
 ---
@@ -220,7 +241,7 @@ https://github.com/khoih-prog/NRF52_ISR_Servo/blob/4260125278f38956f8fdeaca58249
 
 #### 1. File [nRF52_MultipleServos.ino](examples/nRF52_MultipleServos/nRF52_MultipleServos.ino)
 
-https://github.com/khoih-prog/NRF52_ISR_Servo/blob/4260125278f38956f8fdeaca58249ecd80b5b437/examples/nRF52_MultipleServos/nRF52_MultipleServos.ino#L45-L126
+https://github.com/khoih-prog/NRF52_ISR_Servo/blob/b954f20cb0826762417909906c3467bc0d7cc603/examples/nRF52_MultipleServos/nRF52_MultipleServos.ino#L45-L126
 
 ---
 ---
@@ -232,7 +253,7 @@ https://github.com/khoih-prog/NRF52_ISR_Servo/blob/4260125278f38956f8fdeaca58249
 
 ```
 Starting NRF52_MultipleRandomServos on NRF52840_FEATHER
-NRF52_ISR_Servo v1.2.0
+NRF52_ISR_Servo v1.2.1
 Setup OK Servo index = 0
 Setup OK Servo index = 1
 Setup OK Servo index = 2
@@ -305,7 +326,7 @@ Servos sweeps from 0-180 degree
 
 ```
 Starting NRF52_MultipleRandomServos on NRF52840_ITSYBITSY
-NRF52_ISR_Servo v1.2.0
+NRF52_ISR_Servo v1.2.1
 Setup OK Servo index = 0
 Setup OK Servo index = 1
 Setup OK Servo index = 2
@@ -414,15 +435,19 @@ Submit issues to: [NRF52_ISR_Servo issues](https://github.com/khoih-prog/NRF52_I
 
 ## DONE
 
-1. Similar features for Arduino (UNO, Mega, etc...), ESP32, ESP8266, STM32, RP2040, SAMD21/SAMD51
-2. Add functions `getPosition()` and `getPulseWidth()`
-3. Optimize the code
-4. Add complicated examples
-5. Convert to `h-only` style.
-6. Add example [multiFileProject](examples/multiFileProject) to demo for multiple-file project
-7. Optimize code by using passing by `reference` instead of by `value`
-8. Add support to `Sparkfun Pro nRF52840 Mini`
-9. Permit using servos with different pulse ranges simultaneously
+ 1. Similar features for Arduino (UNO, Mega, etc...), ESP32, ESP8266, STM32, RP2040, SAMD21/SAMD51
+ 2. Add functions `getPosition()` and `getPulseWidth()`
+ 3. Optimize the code
+ 4. Add complicated examples
+ 5. Convert to `h-only` style.
+ 6. Add example [multiFileProject](examples/multiFileProject) to demo for multiple-file project
+ 7. Optimize code by using passing by `reference` instead of by `value`
+ 8. Add support to `Sparkfun Pro nRF52840 Mini`
+ 9. Permit using servos with different pulse ranges simultaneously
+10. Add support to Seeeduino nRF52840-based boards such as **Seeed_XIAO_NRF52840 and Seeed_XIAO_NRF52840_SENSE**, etc. using Seeeduino `nRF52` core
+11. Add astyle using `allman` style. Restyle the library
+12. Add `Packages' Patches` to add Seeeduino `nRF52` core
+
 
 ---
 ---
