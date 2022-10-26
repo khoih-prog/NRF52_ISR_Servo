@@ -241,7 +241,7 @@ https://github.com/khoih-prog/NRF52_ISR_Servo/blob/b954f20cb0826762417909906c346
 
 #### 1. File [nRF52_MultipleServos.ino](examples/nRF52_MultipleServos/nRF52_MultipleServos.ino)
 
-https://github.com/khoih-prog/NRF52_ISR_Servo/blob/b954f20cb0826762417909906c3467bc0d7cc603/examples/nRF52_MultipleServos/nRF52_MultipleServos.ino#L45-L126
+https://github.com/khoih-prog/NRF52_ISR_Servo/blob/f6d96bce3ab30a82906fa0e13f514edd9f939c9f/examples/nRF52_MultipleServos/nRF52_MultipleServos.ino#L45-L121
 
 ---
 ---
