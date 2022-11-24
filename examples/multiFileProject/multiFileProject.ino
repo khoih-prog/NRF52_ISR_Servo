@@ -26,7 +26,8 @@ void setup()
 
   while (!Serial && millis() < 5000);
 
-  Serial.println("\nStart multiFileProjects on "); Serial.println(BOARD_NAME);
+  Serial.println("\nStart multiFileProjects on ");
+  Serial.println(BOARD_NAME);
   Serial.println(NRF52_ISR_SERVO_VERSION);
 
 #if defined(NRF52_ISR_SERVO_VERSION_MIN)

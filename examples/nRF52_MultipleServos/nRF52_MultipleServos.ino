@@ -79,7 +79,8 @@ void setup()
 
   delay(200);
 
-  Serial.print(F("\nStarting NRF52_MultipleServos on ")); Serial.println(BOARD_NAME);
+  Serial.print(F("\nStarting NRF52_MultipleServos on "));
+  Serial.println(BOARD_NAME);
   Serial.println(NRF52_ISR_SERVO_VERSION);
 
   for (int index = 0; index < NUM_SERVOS; index++)

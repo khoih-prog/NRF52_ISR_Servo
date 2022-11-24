@@ -6,8 +6,11 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/NRF52_ISR_Servo.svg)](http://github.com/khoih-prog/NRF52_ISR_Servo/issues)
 
+
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
+<a href="https://profile-counter.glitch.me/khoih-prog/count.svg" title="Total khoih-prog Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog/count.svg" style="height: 30px;width: 200px;"></a>
+<a href="https://profile-counter.glitch.me/khoih-prog-NRF52_ISR_Servo/count.svg" title="NRF52_ISR_Servo Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog-NRF52_ISR_Servo/count.svg" style="height: 30px;width: 200px;"></a>
 
 ---
 ---
@@ -251,7 +254,7 @@ https://github.com/khoih-prog/NRF52_ISR_Servo/blob/f6d96bce3ab30a82906fa0e13f514
 ### 1. nRF52_MultipleRandomServos on Adafruit NRF52840_FEATHER
 
 
-```
+```cpp
 Starting NRF52_MultipleRandomServos on NRF52840_FEATHER
 NRF52_ISR_Servo v1.2.1
 Setup OK Servo index = 0
@@ -324,7 +327,7 @@ Servos sweeps from 0-180 degree
 
 ### 2. nRF52_MultipleRandomServos on Adafruit NRF52840_ITSYBITSY
 
-```
+```cpp
 Starting NRF52_MultipleRandomServos on NRF52840_ITSYBITSY
 NRF52_ISR_Servo v1.2.1
 Setup OK Servo index = 0
@@ -477,4 +480,4 @@ If you want to contribute to this project:
 
 ## Copyright
 
-Copyright 2021- Khoi Hoang
+Copyright (c) 2021- Khoi Hoang
